@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 /* ログイン情報を取得するためのライブラリ */
 use Illuminate\Support\Facades\Auth;
 
+use App\Mail\Buy;
+use Illuminate\Support\Facades\Mail;
+
+
+
 class BuyController extends Controller
 {
     public function index()
@@ -23,15 +28,22 @@ class BuyController extends Controller
         return view('buy/index', ['cartitems' => $cartitems, 'subtotal'=> $subtotal]);
     }
 
-    /* 入力した郵送先の情報を処理するstore()アクション */
+
     public function store(Request $request)
     {
-        /* POST情報があれば分岐 */
+        /* リクエストパラメータにpostという情報が含まれているか */
         if ($request->has('post')) {
+
+            /* MailクラスとBuyクラスを使ってメールを送信する */
+            Mail::to(Auth::user()->email)->send(new Buy());
+            /* ログインユーザIDを取得して、そのIDが保持するcartitemを消去 */
             CartItem::where('user_id', Auth::id())->delete();
+            /* 購入完了画面へ遷移 */
             return view('buy/complete');
         }
+        /* フォームのリクエスト情報をセッションに記録する */
         $request->flash();
+        /* 購入画面のビューを再度表示 */
         return $this->index();
     }
 }

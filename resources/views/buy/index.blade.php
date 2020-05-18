@@ -85,6 +85,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-6">
+                                    {{-- confirmがリクエストパラメータに格納されていないかチェック --}}
                                     @if(Request::has('confirm'))
                                         <button type="submit" class="btn btn-primary" name="post">注文を確定する</button>
                                         <button type="submit" class="btn btn-default" name="back">修正する</button>
@@ -93,7 +94,6 @@
                                     @endif
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
